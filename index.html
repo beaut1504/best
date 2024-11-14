@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Status Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+            transition: background-color 0.3s ease;
+        }
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80%;
+            max-width: 400px;
+        }
+        .user {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-size: 1.2em;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Sleep Status Tracker</h2>
+
+    <div class="status-container">
+        <div class="user">
+            <label for="user1">Beaut is <span id="status1">Awake</span></label>
+            <label class="switch">
+                <input type="checkbox" id="user1" onchange="updateStatus(1)">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="user">
+            <label for="user2">Swee is <span id="status2">Awake</span></label>
+            <label class="switch">
+                <input type="checkbox" id="user2" onchange="updateStatus(2)">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+  <script>
+        // Function to update status based on toggle switch
+        function updateStatus(user) {
+            const status = document.getElementById(`status${user}`);
+            const checkbox = document.getElementById(`user${user}`);
+            status.textContent = checkbox.checked ? "Sleeping" : "Awake";
+            updateBackgroundColor();
+        }
+
+        // Function to change background color based on both users' status
+        function updateBackgroundColor() {
+            const user1Status = document.getElementById('user1').checked;
+            const user2Status = document.getElementById('user2').checked;
+
+            // If either user is sleeping, background turns black; otherwise, it stays light
+            document.body.style.backgroundColor = (user1Status || user2Status) ? "#1c1c1c" : "#f0f4f8";
+        }
+    </script>
+</body>
+</html>
