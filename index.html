@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Status Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Firebase 9.x Modular SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js';
+        import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js';
+
+        // Firebase config
+        const firebaseConfig = {
+  apiKey: "AIzaSyCD9MmnyMDs7LfGOu-ed-K2wjDEe2Zeje4",
+  authDomain: "swee-e2f3a.firebaseapp.com",
+  databaseURL: "https://swee-e2f3a-default-rtdb.firebaseio.com",
+  projectId: "swee-e2f3a",
+  storageBucket: "swee-e2f3a.firebasestorage.app",
+  messagingSenderId: "663983612481",
+  appId: "1:663983612481:web:905fabd996c3f85cca9cc0"
+};
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Function to update the user status in Firebase
+        function updateUserStatus(user, isSleeping) {
+            const statusRef = ref(db, 'users/' + user);
+            set(statusRef, isSleeping ? 'Sleeping' : 'Awake');
+        }
+
+        // Real-time listener for User 1's status
+        const user1Ref = ref(db, 'users/user1');
+        onValue(user1Ref, (snapshot) => {
+            const status = snapshot.val();
+            const user1Toggle = document.getElementById('user1-toggle');
+            const user1StatusText = document.getElementById('user1-status');
+
+            // Update toggle and status text based on Firebase data
+            user1Toggle.checked = status === 'Sleeping';
+            user1StatusText.textContent = status === 'Sleeping' ? 'Sleeping' : 'Awake';
+
+            // Update colors based on statuses
+            updateColors();
+        });
+
+        // Real-time listener for User 2's status
+        const user2Ref = ref(db, 'users/user2');
+        onValue(user2Ref, (snapshot) => {
+            const status = snapshot.val();
+            const user2Toggle = document.getElementById('user2-toggle');
+            const user2StatusText = document.getElementById('user2-status');
+
+            // Update toggle and status text based on Firebase data
+            user2Toggle.checked = status === 'Sleeping';
+            user2StatusText.textContent = status === 'Sleeping' ? 'Sleeping' : 'Awake';
+
+            // Update colors based on statuses
+            updateColors();
+        });
+
+        // Function to update the background and text colors based on status
+        function updateColors() {
+            const user1Sleeping = document.getElementById('user1-toggle').checked;
+            const user2Sleeping = document.getElementById('user2-toggle').checked;
+
+            if (user1Sleeping || user2Sleeping) {
+                document.body.style.backgroundColor = 'black';  // Background black when sleeping
+                document.body.style.color = 'aqua';  // Text color aqua
+            } else {
+                document.body.style.backgroundColor = 'black';  // Keep background black
+                document.body.style.color = 'magenta';  // Text color magenta when awake
+            }
+        }
+
+        // Handle toggle status change
+        function toggleStatus(user) {
+            const toggleElement = document.getElementById(user + '-toggle');
+            const isSleeping = toggleElement.checked;
+            updateUserStatus(user, isSleeping);
+        }
+
+        // Add event listeners to toggle switches after DOM content is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const user1Toggle = document.getElementById('user1-toggle');
+            const user2Toggle = document.getElementById('user2-toggle');
+
+            // Attach event listeners to toggles
+            user1Toggle.addEventListener('change', function() {
+                updateUserStatus('user1', user1Toggle.checked);
+            });
+            user2Toggle.addEventListener('change', function() {
+                updateUserStatus('user2', user2Toggle.checked);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h2>Cats</h2>
+
+    <!-- User 1 Toggle -->
+    <div class="toggle-container">
+        <span class="toggle-label">Beau:</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="user1-toggle">
+            <span class="slider"></span>
+        </label>
+        <span id="user1-status">Awake</span>
+    </div>
+
+    <!-- User 2 Toggle -->
+    <div class="toggle-container">
+        <span class="toggle-label">Swee:</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="user2-toggle">
+            <span class="slider"></span>
+        </label>
+        <span id="user2-status">Awake</span>
+    </div>
+
+</body>
+</html>
